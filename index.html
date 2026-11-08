@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#160d2b">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="description" content="MGC-BOOK-LAB — a curated library of books, guides and documents.">
+  <title>MGC-BL | Digital Library</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #10091f;
+      --panel: #1b1230;
+      --panel-2: #24183d;
+      --line: rgba(205, 180, 255, .15);
+      --text: #f7f2ff;
+      --muted: #b7a9ce;
+      --purple: #a879ff;
+      --purple-2: #7846db;
+      --pink: #e2a7ff;
+      --shadow: 0 18px 55px rgba(0,0,0,.28);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--text);
+      background:
+        radial-gradient(ellipse at 12% 0%, rgba(122,72,210,.23), transparent 36rem),
+        radial-gradient(ellipse at 95% 22%, rgba(177,93,220,.12), transparent 32rem),
+        var(--bg);
+      font: 15px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: inherit; }
+    .shell { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar { border-bottom: 1px solid var(--line); background: rgba(16,9,31,.78); backdrop-filter: blur(16px); }
+    .nav { min-height: 76px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+    .brand { display:flex; align-items:center; gap:12px; text-decoration:none; font-weight:800; letter-spacing:.09em; }
+    .brand-mark { width:48px; height:42px; display:grid; place-items:center; border-radius:12px; color:#fff; background:linear-gradient(145deg,#c69aff,#7140d0); box-shadow:0 8px 24px #804ad955; font-size:12px; font-weight:900; letter-spacing:-.04em; line-height:1; text-align:center; }
+    .brand small { display:block; color:var(--muted); font-size:10px; letter-spacing:.18em; font-weight:600; margin-top:1px; }
+    .nav-link { color:var(--muted); text-decoration:none; font-size:13px; }
+    .nav-link:hover { color:#fff; }
+    .nav-tools { display:flex; align-items:center; gap:16px; }
+    .language-wrap { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; }
+    .language-select { border:1px solid var(--line); border-radius:10px; padding:9px 30px 9px 11px; color:var(--text); background:#24183d; font:600 12px inherit; cursor:pointer; }
+    .language-select:focus { outline:2px solid rgba(168,121,255,.55); outline-offset:2px; }
+    @media(max-width:560px) { .nav-tools { gap:8px; } .language-wrap span { display:none; } .language-select { max-width:116px; } }
+    .hero { padding:76px 0 42px; text-align:center; }
+    .eyebrow { display:inline-flex; align-items:center; gap:8px; padding:7px 12px; border:1px solid rgba(190,150,255,.25); border-radius:999px; color:#d6baff; background:rgba(144,91,225,.1); font-size:11px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
+    .eyebrow:before { content:""; width:6px; height:6px; border-radius:50%; background:#bd91ff; box-shadow:0 0 12px #bd91ff; }
+    h1 { margin:20px 0 12px; font-size:clamp(38px,7vw,66px); line-height:1.04; letter-spacing:-.055em; }
+    h1 span { background:linear-gradient(95deg,#fff 12%,#d5b6ff 54%,#a878ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .hero p { max-width:610px; margin:0 auto; color:var(--muted); font-size:16px; }
+    .hero-stats { display:flex; justify-content:center; gap:30px; margin-top:28px; color:var(--muted); font-size:12px; }
+    .hero-stats strong { color:#fff; font-size:15px; margin-right:5px; }
+    .curator { display:flex; flex-direction:column; align-items:center; gap:8px; margin:0 auto 30px; text-align:center; }
+    .curator-photo { width:116px; height:116px; object-fit:cover; object-position:center 22%; border-radius:50%; border:3px solid rgba(198,154,255,.78); box-shadow:0 10px 32px rgba(0,0,0,.35),0 0 0 6px rgba(168,121,255,.10); }
+    .curator-label { color:#c5a5ff; font-size:10px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
+    .curator-name { margin:0; color:var(--text); font-size:16px; font-weight:800; letter-spacing:.01em; }
+    .toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:34px 0 22px; flex-wrap:wrap; }
+    .search-wrap { position:relative; flex:1 1 280px; max-width:430px; }
+    .search-wrap svg { position:absolute; left:15px; top:50%; transform:translateY(-50%); color:#a995c7; }
+    .search { width:100%; padding:13px 16px 13px 44px; border:1px solid var(--line); border-radius:13px; outline:none; background:rgba(32,21,53,.88); color:var(--text); font:inherit; }
+    .search:focus { border-color:#a879ff; box-shadow:0 0 0 3px rgba(168,121,255,.13); }
+    .filters { display:flex; gap:8px; flex-wrap:wrap; }
+    .filter { border:1px solid var(--line); border-radius:999px; padding:9px 14px; color:var(--muted); background:transparent; cursor:pointer; font:600 12px inherit; transition:.2s; }
+    .filter:hover,.filter.active { color:#fff; border-color:rgba(184,143,255,.65); background:rgba(139,85,225,.2); }
+    .section-head { display:flex; align-items:end; justify-content:space-between; gap:12px; margin:30px 0 17px; }
+    .section-head h2 { margin:0; font-size:22px; letter-spacing:-.03em; }
+    .section-head p { margin:4px 0 0; color:var(--muted); font-size:12px; }
+    #resultCount { color:var(--muted); font-size:12px; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; padding-bottom:70px; }
+    .card { min-width:0; overflow:hidden; border:1px solid var(--line); border-radius:19px; background:linear-gradient(155deg,rgba(37,25,61,.96),rgba(24,15,41,.96)); box-shadow:var(--shadow); transition:transform .22s,border-color .22s; }
+    .card:hover { transform:translateY(-4px); border-color:rgba(184,143,255,.48); }
+    .cover { height:185px; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; background:linear-gradient(135deg,#3c2368,#201333); }
+    .cover:before,.cover:after { content:""; position:absolute; border:1px solid rgba(255,255,255,.13); border-radius:50%; width:220px; height:220px; }
+    .cover:before { transform:translate(-65px,45px); }
+    .cover:after { transform:translate(85px,-65px); width:150px; height:150px; }
+    .cover .book-icon { position:relative; z-index:1; width:76px; height:92px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.35); border-radius:5px 12px 12px 5px; background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.05)); box-shadow:12px 12px 30px #10091f88; font-size:34px; }
+    .cover .format { position:absolute; top:13px; left:14px; z-index:2; padding:5px 8px; border-radius:6px; background:rgba(13,7,24,.55); color:#eadcff; font-size:10px; font-weight:800; letter-spacing:.08em; }
+    .card-body { padding:17px; }
+    .category { color:#c5a5ff; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.13em; }
+    .card h3 { margin:7px 0 6px; font-size:17px; line-height:1.3; }
+    .description { min-height:42px; margin:0; color:var(--muted); font-size:12px; }
+    .meta { display:flex; gap:12px; margin:13px 0 15px; color:#9585ad; font-size:11px; }
+    .actions { display:flex; gap:8px; }
+    .btn { flex:1; display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:10px 11px; border-radius:10px; text-decoration:none; font-size:12px; font-weight:750; transition:.2s; }
+    .btn-read { border:1px solid var(--line); color:#e7dcf8; background:rgba(255,255,255,.035); }
+    .btn-read:hover { background:rgba(255,255,255,.09); }
+    .btn-download { color:#fff; background:linear-gradient(110deg,#925be5,#7142c8); box-shadow:0 6px 18px #7142c833; }
+    .btn-download:hover { filter:brightness(1.13); }
+    .empty { display:none; grid-column:1/-1; text-align:center; padding:55px 20px; border:1px dashed var(--line); border-radius:16px; color:var(--muted); }
+    .empty strong { display:block; color:#fff; margin-bottom:5px; }
+    .howto { margin:0 0 65px; padding:22px; border:1px solid var(--line); border-radius:16px; background:rgba(28,18,47,.7); }
+    .howto h2 { margin:0 0 8px; font-size:17px; }
+    .howto p { margin:0; color:var(--muted); font-size:12px; }
+    code { color:#d9c0ff; background:rgba(168,121,255,.12); padding:2px 5px; border-radius:5px; }
+    footer { border-top:1px solid var(--line); padding:22px 0; color:#88799f; font-size:11px; text-align:center; }
+    @media(max-width:850px) { .grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media(max-width:560px) {
+      .shell { width:min(100% - 28px,1160px); }
+      .nav { min-height:66px; }
+      .nav-link { display:none; }
+      .hero { padding:58px 0 28px; }
+      .hero-stats { gap:15px; flex-wrap:wrap; }
+      .toolbar { margin-top:25px; }
+      .grid { grid-template-columns:1fr; gap:14px; }
+      .cover { height:165px; }
+      .filters { width:100%; }
+      .filter { flex:1; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell nav">
+      <a class="brand" href="./" aria-label="MGC-BL home">
+        <span class="brand-mark" aria-label="MGC-BL logo">MGC<br>BL</span>
+        <span>MGC-BL<small id="brandTagline">MY DIGITAL LIBRARY SPACE</small></span>
+      </a>
+      <div class="nav-tools">
+        <label class="language-wrap" for="languageSelect"><span id="languageLabel">Language</span>
+          <select class="language-select" id="languageSelect" aria-label="Select language">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+            <option value="zh">中文</option>
+          </select>
+        </label>
+        <a class="nav-link" id="navExplore" href="#library">Explore library&nbsp; ↓</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <span class="eyebrow" id="heroEyebrow">A library made for my publice documents and Books</span>
+      <h1 id="heroTitle">Knowledge, and information <span>within reach.</span></h1>
+      <p id="heroDescription">Explore my growing collection of books, guides and useful documents. Read online, download a copy to keep or for verification.</p>
+      <div class="hero-stats">
+        <span><strong id="totalBooks">0</strong> <span id="statResources">resources</span></span>
+        <span><strong id="totalCategories">0</strong> <span id="statCategories">categories</span></span>
+        <span><strong>24/7</strong> <span id="statAccess">access</span></span>
+      </div>
+    </section>
+
+    <section class="curator" aria-label="Library founder and curator">
+      <img class="curator-photo" src="covers/mbaeri-gospel-chinomso.webp" alt="Portrait of Mbaeri Gospel Chinomso" width="116" height="116">
+      <span class="curator-label" id="curatorLabel">FOUNDER &amp; CURATOR</span>
+      <p class="curator-name">Mbaeri Gospel Chinomso</p>
+    </section>
+
+    <section id="library" aria-label="Document library">
+      <div class="toolbar">
+        <label class="search-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input id="searchInput" class="search" type="search" placeholder="Search titles, topics or categories..." aria-label="Search documents">
+        </label>
+        <div class="filters" id="filters" aria-label="Filter by category">
+          <!-- Category buttons are generated automatically from the resource cards below.
+               Add a new card with a new data-category value to create a category filter. -->
+          <button class="filter active" data-category="All" type="button">All documents</button>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div><h2 id="collectionTitle">Explore the collection</h2><p id="collectionDescription">Practical manuals, technical documentation and project resources from the MGC collection.</p></div>
+        <span id="resultCount" aria-live="polite">0 items</span>
+      </div>
+      <div class="grid" id="documentGrid">
+        <article class="card" data-resource-id="mgfintech-manual" data-title="MG-FINTECH Web App User Manual" data-category="Business &amp; Finance" data-description="A practical guide to MG-FINTECH, covering its financial and business management workspace and everyday business operations.">
+          <div class="cover" style="background:linear-gradient(135deg,#245b72,#201333)"><span class="format">PDF</span><span class="book-icon" aria-hidden="true">▤</span></div>
+          <div class="card-body">
+            <div class="category">Business &amp; Finance</div>
+            <h3>MG-FINTECH Web App User Manual</h3>
+            <p class="description">A practical guide to MG-FINTECH, covering its financial and business management workspace and everyday business operations.</p>
+            <div class="meta"><span>PDF document</span><span>MG-FINTECH</span></div>
+            <div class="actions">
+              <a class="btn btn-read" href="documents/mg-fintech-web-app-user-manual.pdf" target="_blank" rel="noopener">↗ Read online</a>
+              <a class="btn btn-download" href="documents/mg-fintech-web-app-user-manual.pdf" download>↓ Download</a>
+            </div>
+          </div>
+        </article>
+        <article class="card" data-resource-id="mgcfintech-building" data-title="MGC-FINTECH Building Documentation" data-category="Technology &amp; Development" data-description="Technical documentation describing the MGC-FINTECH full-stack application, its frontend, backend, database and development architecture.">
+          <div class="cover" style="background:linear-gradient(135deg,#263c79,#24163e)"><span class="format">PDF</span><span class="book-icon" aria-hidden="true">⌘</span></div>
+          <div class="card-body">
+            <div class="category">Technology &amp; Development</div>
+            <h3>MGC-FINTECH Building Documentation</h3>
+            <p class="description">Technical documentation describing the MGC-FINTECH full-stack application, its frontend, backend, database and development architecture.</p>
+            <div class="meta"><span>PDF document</span><span>MGC-FINTECH</span></div>
+            <div class="actions">
+              <a class="btn btn-read" href="documents/MGC_FINTECH_Building-Documentation.pdf" target="_blank" rel="noopener">↗ Read online</a>
+              <a class="btn btn-download" href="documents/MGC_FINTECH_Building-Documentation.pdf" download>↓ Download</a>
+            </div>
+          </div>
+        </article>
+        <article class="card" data-resource-id="mgcfintech-summary" data-title="MGC-FINTECH Project Summary" data-category="Business &amp; Finance" data-description="A concise overview of the MGC-FINTECH project, including its features, technology stack, integrations and development experience.">
+          <div class="cover" style="background:linear-gradient(135deg,#245b72,#201333)"><span class="format">PDF</span><span class="book-icon" aria-hidden="true">▤</span></div>
+          <div class="card-body">
+            <div class="category">Business &amp; Finance</div>
+            <h3>MGC-FINTECH Project Summary</h3>
+            <p class="description">A concise overview of the MGC-FINTECH project, including its features, technology stack, integrations and development experience.</p>
+            <div class="meta"><span>PDF document</span><span>MGC-FINTECH</span></div>
+            <div class="actions">
+              <a class="btn btn-read" href="documents/MGC_FINTECH_Project_Summary.pdf" target="_blank" rel="noopener">↗ Read online</a>
+              <a class="btn btn-download" href="documents/MGC_FINTECH_Project_Summary.pdf" download>↓ Download</a>
+            </div>
+          </div>
+        </article>
+        <article class="card" data-resource-id="projora-building" data-title="PROJORA Building Documentation" data-category="Technology &amp; Development" data-description="A technical case study of PROJORA, covering its full-stack architecture, technologies, development process and deployment.">
+          <div class="cover" style="background:linear-gradient(135deg,#263c79,#24163e)"><span class="format">PDF</span><span class="book-icon" aria-hidden="true">⌘</span></div>
+          <div class="card-body">
+            <div class="category">Technology &amp; Development</div>
+            <h3>PROJORA Building Documentation</h3>
+            <p class="description">A technical case study of PROJORA, covering its full-stack architecture, technologies, development process and deployment.</p>
+            <div class="meta"><span>PDF document</span><span>PROJORA</span></div>
+            <div class="actions">
+              <a class="btn btn-read" href="documents/PROJORA_Building-Documentation.pdf" target="_blank" rel="noopener">↗ Read online</a>
+              <a class="btn btn-download" href="documents/PROJORA_Building-Documentation.pdf" download>↓ Download</a>
+            </div>
+          </div>
+        </article>
+        <article class="card" data-resource-id="projora-manual" data-title="PROJORA User Operating Manual" data-category="User Guides" data-description="A beginner-friendly operating guide to organizing projects and catalogues, managing a profile and sharing work through PROJORA.">
+          <div class="cover" style="background:linear-gradient(135deg,#63366d,#28183f)"><span class="format">PDF</span><span class="book-icon" aria-hidden="true">✧</span></div>
+          <div class="card-body">
+            <div class="category">User Guides</div>
+            <h3>PROJORA User Operating Manual</h3>
+            <p class="description">A beginner-friendly operating guide to organizing projects and catalogues, managing a profile and sharing work through PROJORA.</p>
+            <div class="meta"><span>PDF document</span><span>PROJORA</span></div>
+            <div class="actions">
+              <a class="btn btn-read" href="documents/PROJORA_User_Operating_Manual.pdf" target="_blank" rel="noopener">↗ Read online</a>
+              <a class="btn btn-download" href="documents/PROJORA_User_Operating_Manual.pdf" download>↓ Download</a>
+            </div>
+          </div>
+        </article>
+
+        <!--
+        ================================================================
+        ADD A NEW RESOURCE: copy this template and paste it ABOVE emptyState.
+        1) Put the PDF in documents/ (subfolders are fine).
+        2) Update title, category, description and both PDF href paths.
+        3) Save index.html. The category filter is created automatically.
+
+        <article class="card"
+          data-title="Your PDF title"
+          data-category="Your new category"
+          data-description="A short description that helps readers find this resource.">
+          <div class="cover" style="background:linear-gradient(135deg,#245b72,#201333)">
+            <span class="format">PDF</span>
+            <span class="book-icon" aria-hidden="true">▤</span>
+          </div>
+          <div class="card-body">
+            <div class="category">Your new category</div>
+            <h3>Your PDF title</h3>
+            <p class="description">A short description that helps readers find this resource.</p>
+            <div class="meta"><span>PDF document</span><span>Your collection</span></div>
+            <div class="actions">
+              <a class="btn btn-read" href="documents/your-folder/your-file.pdf" target="_blank" rel="noopener">↗ Read online</a>
+              <a class="btn btn-download" href="documents/your-folder/your-file.pdf" download>↓ Download</a>
+            </div>
+          </div>
+        </article>
+        ================================================================
+        -->
+
+        <div class="empty" id="emptyState"><strong id="emptyTitle">No matching documents</strong><span id="emptyDescription">Try another title or choose a different category.</span></div>
+      </div>
+    </section>
+
+    
+<!-- ABOUT MGC-BL SECTION -->
+<section id="about" style="
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 40px 25px;
+  text-align: center;
+  background: #211532;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  color: #ffffff;
+">
+  <div style="display:inline-block;padding:10px 22px;background:#7545ce;border-radius:10px;font-size:22px;font-weight:bold;margin-bottom:20px;">
+    MGC-BL
+  </div>
+
+  <h2 id="aboutTitle" style="font-size:30px;margin-bottom:10px;">About MGC-BL</h2>
+  <p id="aboutDescription" style="color:#d6b8ff;font-size:18px;">Empowering Minds Through Knowledge.</p>
+
+  <h3 id="aboutMeetFounder" style="margin-top:30px;">Meet the Founder</h3>
+  <h2 style="color:#d6b8ff;">Mbaeri Gospel Chinomso</h2>
+
+  <p id="aboutIntro" style="line-height:1.9;color:#e5dff0;">
+    Welcome to MGC-BL, a digital knowledge and resource library created to make valuable information, educational materials, professional resources and practical guides more accessible to people around the world.
+  </p>
+  <p id="aboutFounderIntro" style="line-height:1.9;color:#e5dff0;">
+    My name is Mbaeri Gospel Chinomso, founder and curator of MGC-BL. I believe knowledge is one of the most powerful tools for personal development, professional excellence, innovation and positive transformation.
+  </p>
+
+  <h3 id="aboutMissionTitle">Our Mission</h3>
+  <p id="aboutMissionText" style="line-height:1.9;color:#e5dff0;">
+    My mission is to bridge the knowledge gap by bringing valuable digital learning resources together in one accessible platform. MGC-BL supports students, entrepreneurs, professionals, developers and lifelong learners through books, PDF documents, technical guides, business resources and educational materials.
+  </p>
+
+  <h3 id="aboutDiscoverTitle">What You Will Discover</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin:25px 0;text-align:left;">
+    <div style="background:#302044;padding:18px;border-radius:12px;">
+      <strong id="aboutBusinessTitle">Business &amp; Entrepreneurship</strong>
+      <p id="aboutBusinessText">Business strategies, finance and management.</p>
+    </div>
+    <div style="background:#302044;padding:18px;border-radius:12px;">
+      <strong id="aboutTechnologyTitle">Technology &amp; Innovation</strong>
+      <p id="aboutTechnologyText">AI, software development and digital innovation.</p>
+    </div>
+    <div style="background:#302044;padding:18px;border-radius:12px;">
+      <strong id="aboutEducationTitle">Educational Resources</strong>
+      <p id="aboutEducationText">Books, research materials and learning guides.</p>
+    </div>
+    <div style="background:#302044;padding:18px;border-radius:12px;">
+      <strong id="aboutManualsTitle">User Manuals</strong>
+      <p id="aboutManualsText">Technical documentation and operating guides.</p>
+    </div>
+  </div>
+
+  <h3 id="aboutVisionTitle">My Vision</h3>
+  <p id="aboutVisionText" style="line-height:1.9;color:#e5dff0;">
+    I envision MGC-BL growing into a globally accessible digital library that connects people with knowledge beyond geographical, cultural and language barriers. With support for English, French, German, Spanish and Chinese, I want to make knowledge accessible to a diverse international audience.
+  </p>
+  <p id="aboutClosing" style="color:#d6b8ff;font-weight:bold;font-size:17px;margin-top:30px;">
+    MGC-BL — Discover. Learn. Innovate. Grow.
+  </p>
+  <p style="margin-top:20px;color:#bca9d4;">
+    Mbaeri Gospel Chinomso<br>
+    <span id="aboutFounderRole">Founder &amp; Curator, MGC-BL</span>
+  </p>
+</section>
+<!-- END ABOUT SECTION -->
+
+  </main>
+
+  <footer><div class="shell">© <span id="year"></span> MGC-BL · <span id="footerText">A personal digital library</span></div></footer>
+
+  <script>
+    // MGC-BOOK-LAB manual library manager with five interface languages.
+    // New manually added cards remain in English unless you add a translation entry below.
+    const grid = document.getElementById("documentGrid");
+    const cards = [...grid.querySelectorAll(".card")];
+    const searchInput = document.getElementById("searchInput");
+    const filters = document.getElementById("filters");
+    const emptyState = document.getElementById("emptyState");
+    const resultCount = document.getElementById("resultCount");
+    const languageSelect = document.getElementById("languageSelect");
+    let currentLanguage = "en";
+    let activeCategory = "All";
+
+    const ui = {
+      en: {language:"Language",nav:"Explore library ↓",tagline:"MY DIGITAL LIBRARY SPACE",eyebrow:"A library made for my public documents and books",heroTitle:"Knowledge, and information <span>within reach.</span>",heroDescription:"Explore my growing collection of books, guides and useful documents. Read online, download a copy to keep or for verification.",resources:"resources",categories:"categories",access:"access",search:"Search titles, topics or categories...",searchLabel:"Search documents",all:"All documents",collection:"Explore the collection",collectionDescription:"Practical manuals, technical documentation and project resources from the MGC collection.",itemsOne:"item",itemsMany:"items",read:"↗ Read online",download:"↓ Download",pdf:"PDF document",emptyTitle:"No matching documents",emptyDescription:"Try another title or choose a different category.",about:"About this library",aboutDescription:"This collection contains five PDF resources covering MG-FINTECH and PROJORA. Add PDFs inside documents/, then copy the commented resource-card template in index.html. Category filters and library counts update automatically from the cards you add.",footer:"A personal digital library",categoriesLabel:"Filter by category",curator:"FOUNDER & CURATOR"},
+      fr: {language:"Langue",nav:"Explorer la bibliothèque ↓",tagline:"MON ESPACE DE BIBLIOTHÈQUE NUMÉRIQUE",eyebrow:"Une bibliothèque pour mes documents publics et mes livres",heroTitle:"Le savoir et l’information<span>à portée de main.</span>",heroDescription:"Explorez ma collection grandissante de livres, de guides et de documents utiles. Lisez en ligne ou téléchargez une copie à conserver ou à des fins de vérification.",resources:"ressources",categories:"catégories",access:"accès",search:"Rechercher des titres, sujets ou catégories...",searchLabel:"Rechercher des documents",all:"Tous les documents",collection:"Explorer la collection",collectionDescription:"Manuels pratiques, documentation technique et ressources de projets de la collection MGC.",itemsOne:"élément",itemsMany:"éléments",read:"↗ Lire en ligne",download:"↓ Télécharger",pdf:"Document PDF",emptyTitle:"Aucun document correspondant",emptyDescription:"Essayez un autre titre ou choisissez une autre catégorie.",about:"À propos de cette bibliothèque",aboutDescription:"Cette collection contient cinq ressources PDF sur MG-FINTECH et PROJORA. Ajoutez des PDF dans documents/, puis copiez le modèle de fiche commenté dans index.html. Les filtres et les compteurs se mettent à jour automatiquement.",footer:"Une bibliothèque numérique personnelle",categoriesLabel:"Filtrer par catégorie",curator:"FONDATEUR ET CONSERVATEUR"},
+      de: {language:"Sprache",nav:"Bibliothek entdecken ↓",tagline:"MEINE DIGITALE BIBLIOTHEK",eyebrow:"Eine Bibliothek für meine öffentlichen Dokumente und Bücher",heroTitle:"Wissen und Informationen<span>zum Greifen nah.</span>",heroDescription:"Entdecken Sie meine wachsende Sammlung von Büchern, Leitfäden und nützlichen Dokumenten. Lesen Sie online oder laden Sie eine Kopie zum Aufbewahren oder zur Überprüfung herunter.",resources:"Ressourcen",categories:"Kategorien",access:"Zugang",search:"Titel, Themen oder Kategorien suchen...",searchLabel:"Dokumente suchen",all:"Alle Dokumente",collection:"Sammlung entdecken",collectionDescription:"Praktische Handbücher, technische Dokumentation und Projektressourcen aus der MGC-Sammlung.",itemsOne:"Eintrag",itemsMany:"Einträge",read:"↗ Online lesen",download:"↓ Herunterladen",pdf:"PDF-Dokument",emptyTitle:"Keine passenden Dokumente",emptyDescription:"Versuchen Sie einen anderen Titel oder wählen Sie eine andere Kategorie.",about:"Über diese Bibliothek",aboutDescription:"Diese Sammlung enthält fünf PDF-Ressourcen zu MG-FINTECH und PROJORA. Fügen Sie PDFs in documents/ ein und kopieren Sie dann die kommentierte Ressourcenvorlage in index.html. Kategorienfilter und Zähler werden automatisch aktualisiert.",footer:"Persönliche digitale Bibliothek",categoriesLabel:"Nach Kategorie filtern",curator:"GRÜNDER & KURATOR"},
+      es: {language:"Idioma",nav:"Explorar biblioteca ↓",tagline:"MI BIBLIOTECA DIGITAL",eyebrow:"Una biblioteca para mis documentos públicos y libros",heroTitle:"Conocimiento e información<span>a tu alcance.</span>",heroDescription:"Explora mi creciente colección de libros, guías y documentos útiles. Lee en línea o descarga una copia para conservarla o verificarla.",resources:"recursos",categories:"categorías",access:"acceso",search:"Buscar títulos, temas o categorías...",searchLabel:"Buscar documentos",all:"Todos los documentos",collection:"Explorar la colección",collectionDescription:"Manuales prácticos, documentación técnica y recursos de proyectos de la colección MGC.",itemsOne:"elemento",itemsMany:"elementos",read:"↗ Leer en línea",download:"↓ Descargar",pdf:"Documento PDF",emptyTitle:"No hay documentos coincidentes",emptyDescription:"Prueba con otro título o elige una categoría diferente.",about:"Acerca de esta biblioteca",aboutDescription:"Esta colección contiene cinco recursos PDF sobre MG-FINTECH y PROJORA. Añade archivos PDF en documents/ y copia la plantilla comentada de recursos en index.html. Los filtros y contadores se actualizan automáticamente.",footer:"Biblioteca digital personal",categoriesLabel:"Filtrar por categoría",curator:"FUNDADOR Y CURADOR"},
+      zh: {language:"语言",nav:"浏览图书馆 ↓",tagline:"我的数字图书馆空间",eyebrow:"一个展示我的公开文档和书籍的图书馆",heroTitle:"知识与信息<span>触手可及。</span>",heroDescription:"浏览我不断丰富的书籍、指南和实用文档收藏。您可以在线阅读，也可以下载副本以供保存或核验。",resources:"项资源",categories:"个类别",access:"全天候访问",search:"搜索标题、主题或类别...",searchLabel:"搜索文档",all:"全部文档",collection:"浏览馆藏",collectionDescription:"MGC 馆藏中的实用手册、技术文档和项目资料。",itemsOne:"项",itemsMany:"项",read:"↗ 在线阅读",download:"↓ 下载",pdf:"PDF 文档",emptyTitle:"没有找到匹配的文档",emptyDescription:"请尝试其他标题或选择其他类别。",about:"关于本图书馆",aboutDescription:"本馆藏包含五份关于 MG-FINTECH 和 PROJORA 的 PDF 资料。将 PDF 文件添加到 documents/ 文件夹，然后复制 index.html 中注释的资源卡片模板。类别筛选和资源数量会根据卡片自动更新。",footer:"个人数字图书馆",categoriesLabel:"按类别筛选",curator:"创始人兼馆藏管理员"}
+    };
+
+    // Localized labels for the five PDF resources. Product and project names stay unchanged.
+    const resourceTranslations = {
+      fr: {
+        "mgfintech-manual": ["Manuel d’utilisation de l’application web MG-FINTECH", "Finance et gestion", "Guide pratique de MG-FINTECH, couvrant son espace de gestion financière et commerciale ainsi que les opérations quotidiennes."],
+        "mgcfintech-building": ["Documentation technique de MGC-FINTECH", "Technologie et développement", "Documentation technique de l’application full-stack MGC-FINTECH : interface, serveur, base de données et architecture de développement."],
+        "mgcfintech-summary": ["Résumé du projet MGC-FINTECH", "Finance et gestion", "Présentation concise du projet MGC-FINTECH, de ses fonctionnalités, de sa pile technologique, de ses intégrations et de son développement."],
+        "projora-building": ["Documentation technique de PROJORA", "Technologie et développement", "Étude technique de PROJORA : architecture full-stack, technologies, processus de développement et déploiement."],
+        "projora-manual": ["Manuel d’utilisation de PROJORA", "Guides d’utilisation", "Guide pratique pour organiser des projets et des catalogues, gérer un profil et partager son travail avec PROJORA."]
+      },
+      de: {
+        "mgfintech-manual": ["Benutzerhandbuch der MG-FINTECH-Web-App", "Geschäft und Finanzen", "Praktischer Leitfaden zu MG-FINTECH mit Finanz- und Geschäftsverwaltung sowie täglichen Geschäftsabläufen."],
+        "mgcfintech-building": ["Technische Dokumentation von MGC-FINTECH", "Technologie und Entwicklung", "Technische Dokumentation der Full-Stack-Anwendung MGC-FINTECH mit Frontend, Backend, Datenbank und Entwicklungsarchitektur."],
+        "mgcfintech-summary": ["MGC-FINTECH-Projektübersicht", "Geschäft und Finanzen", "Kompakte Übersicht über das MGC-FINTECH-Projekt, seine Funktionen, den Technologie-Stack, Integrationen und die Entwicklung."],
+        "projora-building": ["Technische Dokumentation von PROJORA", "Technologie und Entwicklung", "Technische Fallstudie zu PROJORA mit Full-Stack-Architektur, Technologien, Entwicklungsprozess und Bereitstellung."],
+        "projora-manual": ["PROJORA-Benutzerhandbuch", "Benutzerhandbücher", "Einsteigerfreundliche Anleitung zum Organisieren von Projekten und Katalogen, Verwalten eines Profils und Teilen von Arbeit mit PROJORA."]
+      },
+      es: {
+        "mgfintech-manual": ["Manual de usuario de la aplicación web MG-FINTECH", "Negocios y finanzas", "Guía práctica de MG-FINTECH sobre su espacio de gestión financiera y empresarial y las operaciones diarias."],
+        "mgcfintech-building": ["Documentación técnica de MGC-FINTECH", "Tecnología y desarrollo", "Documentación técnica de la aplicación full-stack MGC-FINTECH: interfaz, servidor, base de datos y arquitectura de desarrollo."],
+        "mgcfintech-summary": ["Resumen del proyecto MGC-FINTECH", "Negocios y finanzas", "Resumen del proyecto MGC-FINTECH, sus funciones, tecnologías, integraciones y experiencia de desarrollo."],
+        "projora-building": ["Documentación técnica de PROJORA", "Tecnología y desarrollo", "Estudio técnico de PROJORA sobre su arquitectura full-stack, tecnologías, proceso de desarrollo y despliegue."],
+        "projora-manual": ["Manual de usuario de PROJORA", "Guías de usuario", "Guía sencilla para organizar proyectos y catálogos, administrar un perfil y compartir trabajo mediante PROJORA."]
+      },
+      zh: {
+        "mgfintech-manual": ["MG-FINTECH 网页应用用户手册", "商业与金融", "MG-FINTECH 实用指南，介绍财务与业务管理工作区以及日常业务操作。"],
+        "mgcfintech-building": ["MGC-FINTECH 构建技术文档", "技术与开发", "MGC-FINTECH 全栈应用技术文档，涵盖前端、后端、数据库和开发架构。"],
+        "mgcfintech-summary": ["MGC-FINTECH 项目概要", "商业与金融", "MGC-FINTECH 项目的简要介绍，包括功能、技术栈、集成和开发经验。"],
+        "projora-building": ["PROJORA 构建技术文档", "技术与开发", "PROJORA 技术案例，介绍其全栈架构、技术、开发流程和部署。"],
+        "projora-manual": ["PROJORA 用户操作手册", "用户指南", "面向初学者的指南，介绍如何使用 PROJORA 组织项目和目录、管理个人资料并分享工作。"]
+      }
+    };
+
+    const categoryTranslations = {
+      fr: {"Business & Finance":"Finance et gestion","Technology & Development":"Technologie et développement","User Guides":"Guides d’utilisation"},
+      de: {"Business & Finance":"Geschäft und Finanzen","Technology & Development":"Technologie und Entwicklung","User Guides":"Benutzerhandbücher"},
+      es: {"Business & Finance":"Negocios y finanzas","Technology & Development":"Tecnología y desarrollo","User Guides":"Guías de usuario"},
+      zh: {"Business & Finance":"商业与金融","Technology & Development":"技术与开发","User Guides":"用户指南"}
+    };
+
+    // Translations for the About section at the bottom of the page.
+    const aboutTranslations = {
+      en: {
+        aboutTitle:"About MGC-BL", aboutDescription:"Empowering Minds Through Knowledge.", aboutMeetFounder:"Meet the Founder",
+        aboutIntro:"Welcome to MGC-BL, a digital knowledge and resource library created to make valuable information, educational materials, professional resources and practical guides more accessible to people around the world.",
+        aboutFounderIntro:"My name is Mbaeri Gospel Chinomso, founder and curator of MGC-BL. I believe knowledge is one of the most powerful tools for personal development, professional excellence, innovation and positive transformation.",
+        aboutMissionTitle:"Our Mission", aboutMissionText:"My mission is to bridge the knowledge gap by bringing valuable digital learning resources together in one accessible platform. MGC-BL supports students, entrepreneurs, professionals, developers and lifelong learners through books, PDF documents, technical guides, business resources and educational materials.",
+        aboutDiscoverTitle:"What You Will Discover", aboutBusinessTitle:"Business & Entrepreneurship", aboutBusinessText:"Business strategies, finance and management.",
+        aboutTechnologyTitle:"Technology & Innovation", aboutTechnologyText:"AI, software development and digital innovation.",
+        aboutEducationTitle:"Educational Resources", aboutEducationText:"Books, research materials and learning guides.",
+        aboutManualsTitle:"User Manuals", aboutManualsText:"Technical documentation and operating guides.",
+        aboutVisionTitle:"My Vision", aboutVisionText:"I envision MGC-BL growing into a globally accessible digital library that connects people with knowledge beyond geographical, cultural and language barriers. With support for English, French, German, Spanish and Chinese, I want to make knowledge accessible to a diverse international audience.",
+        aboutClosing:"MGC-BL — Discover. Learn. Innovate. Grow.", aboutFounderRole:"Founder & Curator, MGC-BL"
+      },
+      fr: {
+        aboutTitle:"À propos de MGC-BL", aboutDescription:"Donner aux esprits les moyens d’agir grâce au savoir.", aboutMeetFounder:"Rencontrez le fondateur",
+        aboutIntro:"Bienvenue sur MGC-BL, une bibliothèque numérique de connaissances et de ressources créée pour rendre les informations utiles, les supports pédagogiques, les ressources professionnelles et les guides pratiques plus accessibles à tous.",
+        aboutFounderIntro:"Je m’appelle Mbaeri Gospel Chinomso, fondateur et conservateur de MGC-BL. Je crois que le savoir est l’un des outils les plus puissants pour le développement personnel, l’excellence professionnelle, l’innovation et une transformation positive.",
+        aboutMissionTitle:"Notre mission", aboutMissionText:"Ma mission est de réduire le déficit de connaissances en réunissant des ressources numériques d’apprentissage utiles sur une plateforme accessible. MGC-BL accompagne les étudiants, entrepreneurs, professionnels, développeurs et apprenants tout au long de leur vie grâce à des livres, PDF, guides techniques, ressources commerciales et supports pédagogiques.",
+        aboutDiscoverTitle:"Ce que vous découvrirez", aboutBusinessTitle:"Affaires et entrepreneuriat", aboutBusinessText:"Stratégies commerciales, finance et gestion.",
+        aboutTechnologyTitle:"Technologie et innovation", aboutTechnologyText:"IA, développement logiciel et innovation numérique.",
+        aboutEducationTitle:"Ressources pédagogiques", aboutEducationText:"Livres, documents de recherche et guides d’apprentissage.",
+        aboutManualsTitle:"Manuels d’utilisation", aboutManualsText:"Documentation technique et guides d’utilisation.",
+        aboutVisionTitle:"Ma vision", aboutVisionText:"Je souhaite faire de MGC-BL une bibliothèque numérique accessible dans le monde entier, qui relie les personnes au savoir au-delà des frontières géographiques, culturelles et linguistiques. Grâce à la prise en charge de l’anglais, du français, de l’allemand, de l’espagnol et du chinois, je souhaite rendre le savoir accessible à un public international diversifié.",
+        aboutClosing:"MGC-BL — Découvrez. Apprenez. Innovez. Évoluez.", aboutFounderRole:"Fondateur et conservateur de MGC-BL"
+      },
+      de: {
+        aboutTitle:"Über MGC-BL", aboutDescription:"Wissen stärkt Menschen.", aboutMeetFounder:"Lernen Sie den Gründer kennen",
+        aboutIntro:"Willkommen bei MGC-BL, einer digitalen Wissens- und Ressourcenbibliothek. Sie wurde geschaffen, um wertvolle Informationen, Lernmaterialien, berufliche Ressourcen und praktische Leitfäden für Menschen auf der ganzen Welt zugänglicher zu machen.",
+        aboutFounderIntro:"Mein Name ist Mbaeri Gospel Chinomso. Ich bin Gründer und Kurator von MGC-BL. Ich bin überzeugt, dass Wissen zu den wirkungsvollsten Werkzeugen für persönliche Entwicklung, berufliche Exzellenz, Innovation und positive Veränderung gehört.",
+        aboutMissionTitle:"Unsere Mission", aboutMissionText:"Meine Mission ist es, Wissenslücken zu schließen, indem wertvolle digitale Lernressourcen auf einer leicht zugänglichen Plattform zusammengeführt werden. MGC-BL unterstützt Studierende, Unternehmer, Fachleute, Entwickler und lebenslang Lernende mit Büchern, PDF-Dokumenten, technischen Leitfäden, Geschäftsressourcen und Lernmaterialien.",
+        aboutDiscoverTitle:"Das erwartet Sie", aboutBusinessTitle:"Wirtschaft und Unternehmertum", aboutBusinessText:"Geschäftsstrategien, Finanzen und Management.",
+        aboutTechnologyTitle:"Technologie und Innovation", aboutTechnologyText:"KI, Softwareentwicklung und digitale Innovation.",
+        aboutEducationTitle:"Lernressourcen", aboutEducationText:"Bücher, Forschungsunterlagen und Lernleitfäden.",
+        aboutManualsTitle:"Benutzerhandbücher", aboutManualsText:"Technische Dokumentation und Bedienungsanleitungen.",
+        aboutVisionTitle:"Meine Vision", aboutVisionText:"Ich möchte MGC-BL zu einer weltweit zugänglichen digitalen Bibliothek entwickeln, die Menschen über geografische, kulturelle und sprachliche Grenzen hinweg mit Wissen verbindet. Mit Unterstützung für Englisch, Französisch, Deutsch, Spanisch und Chinesisch soll Wissen ein vielfältiges internationales Publikum erreichen.",
+        aboutClosing:"MGC-BL — Entdecken. Lernen. Innovieren. Wachsen.", aboutFounderRole:"Gründer und Kurator von MGC-BL"
+      },
+      es: {
+        aboutTitle:"Acerca de MGC-BL", aboutDescription:"Impulsando mentes a través del conocimiento.", aboutMeetFounder:"Conoce al fundador",
+        aboutIntro:"Te damos la bienvenida a MGC-BL, una biblioteca digital de conocimientos y recursos creada para facilitar el acceso a información valiosa, materiales educativos, recursos profesionales y guías prácticas para personas de todo el mundo.",
+        aboutFounderIntro:"Me llamo Mbaeri Gospel Chinomso, fundador y curador de MGC-BL. Creo que el conocimiento es una de las herramientas más poderosas para el desarrollo personal, la excelencia profesional, la innovación y la transformación positiva.",
+        aboutMissionTitle:"Nuestra misión", aboutMissionText:"Mi misión es reducir la brecha de conocimiento reuniendo valiosos recursos digitales de aprendizaje en una plataforma accesible. MGC-BL apoya a estudiantes, emprendedores, profesionales, desarrolladores y personas que aprenden durante toda la vida mediante libros, documentos PDF, guías técnicas, recursos empresariales y materiales educativos.",
+        aboutDiscoverTitle:"Lo que encontrarás", aboutBusinessTitle:"Negocios y emprendimiento", aboutBusinessText:"Estrategias empresariales, finanzas y gestión.",
+        aboutTechnologyTitle:"Tecnología e innovación", aboutTechnologyText:"IA, desarrollo de software e innovación digital.",
+        aboutEducationTitle:"Recursos educativos", aboutEducationText:"Libros, documentos de investigación y guías de aprendizaje.",
+        aboutManualsTitle:"Manuales de usuario", aboutManualsText:"Documentación técnica y guías de funcionamiento.",
+        aboutVisionTitle:"Mi visión", aboutVisionText:"Mi visión es que MGC-BL se convierta en una biblioteca digital accesible en todo el mundo que conecte a las personas con el conocimiento más allá de las fronteras geográficas, culturales y lingüísticas. Con soporte para inglés, francés, alemán, español y chino, quiero acercar el conocimiento a un público internacional diverso.",
+        aboutClosing:"MGC-BL — Descubre. Aprende. Innova. Crece.", aboutFounderRole:"Fundador y curador de MGC-BL"
+      },
+      zh: {
+        aboutTitle:"关于 MGC-BL", aboutDescription:"以知识启迪思想。", aboutMeetFounder:"认识创始人",
+        aboutIntro:"欢迎来到 MGC-BL。这是一个数字知识与资源图书馆，旨在让世界各地的人们更容易获取有价值的信息、教育资料、专业资源和实用指南。",
+        aboutFounderIntro:"我叫 Mbaeri Gospel Chinomso，是 MGC-BL 的创始人和馆藏策划人。我相信，知识是促进个人发展、职业卓越、创新和积极变革的最有力工具之一。",
+        aboutMissionTitle:"我们的使命", aboutMissionText:"我的使命是汇集有价值的数字学习资源，建立一个便于访问的平台，以缩小知识差距。MGC-BL 通过书籍、PDF 文档、技术指南、商业资源和教育材料，为学生、创业者、专业人士、开发者及终身学习者提供支持。",
+        aboutDiscoverTitle:"您将在这里发现", aboutBusinessTitle:"商业与创业", aboutBusinessText:"商业战略、金融与管理。",
+        aboutTechnologyTitle:"科技与创新", aboutTechnologyText:"人工智能、软件开发与数字创新。",
+        aboutEducationTitle:"教育资源", aboutEducationText:"书籍、研究资料和学习指南。",
+        aboutManualsTitle:"用户手册", aboutManualsText:"技术文档和操作指南。",
+        aboutVisionTitle:"我的愿景", aboutVisionText:"我希望 MGC-BL 成长为一个面向全球开放的数字图书馆，让人们跨越地域、文化和语言界限获取知识。通过支持英语、法语、德语、西班牙语和中文，我希望让多元化的国际读者都能受益于知识。",
+        aboutClosing:"MGC-BL — 探索。学习。创新。成长。", aboutFounderRole:"MGC-BL 创始人兼馆藏策划人"
+      }
+    };
+
+    const staticIds = {
+      brandTagline:"tagline", languageLabel:"language", navExplore:"nav", heroEyebrow:"eyebrow", heroDescription:"heroDescription",
+      statResources:"resources", statCategories:"categories", statAccess:"access", collectionTitle:"collection",
+      collectionDescription:"collectionDescription", emptyTitle:"emptyTitle", emptyDescription:"emptyDescription",
+      aboutTitle:"about", aboutDescription:"aboutDescription", footerText:"footer", curatorLabel:"curator"
+    };
+
+    function applyLanguage(language) {
+      currentLanguage = ui[language] ? language : "en";
+      const t = ui[currentLanguage];
+      document.documentElement.lang = currentLanguage === "zh" ? "zh-CN" : currentLanguage;
+      document.title = "MGC-BL | " + ({en:"Digital Library",fr:"Bibliothèque numérique",de:"Digitale Bibliothek",es:"Biblioteca digital",zh:"数字图书馆"}[currentLanguage]);
+      document.querySelector('meta[name="description"]').content = t.heroDescription;
+      Object.entries(staticIds).forEach(([id,key]) => { const el=document.getElementById(id); if(el) el.textContent=t[key]; });
+      Object.entries(aboutTranslations[currentLanguage]).forEach(([id,value]) => { const el=document.getElementById(id); if(el) el.textContent=value; });
+      document.getElementById("heroTitle").innerHTML = t.heroTitle;
+      searchInput.placeholder = t.search;
+      searchInput.setAttribute("aria-label", t.searchLabel);
+      filters.setAttribute("aria-label", t.categoriesLabel);
+      languageSelect.setAttribute("aria-label", t.language);
+
+      cards.forEach(card => {
+        const originalCategory = card.dataset.originalCategory || card.dataset.category;
+        card.dataset.originalCategory = originalCategory;
+        const originalTitle = card.dataset.originalTitle || card.dataset.title;
+        const originalDescription = card.dataset.originalDescription || card.dataset.description;
+        card.dataset.originalTitle = originalTitle;
+        card.dataset.originalDescription = originalDescription;
+        const translated = resourceTranslations[currentLanguage]?.[card.dataset.resourceId];
+        const title = translated ? translated[0] : originalTitle;
+        const category = translated ? translated[1] : (categoryTranslations[currentLanguage]?.[originalCategory] || originalCategory);
+        const description = translated ? translated[2] : originalDescription;
+        card.dataset.title = title;
+        card.dataset.category = category;
+        card.dataset.description = description;
+        card.querySelector(".category").textContent = category;
+        card.querySelector("h3").textContent = title;
+        card.querySelector(".description").textContent = description;
+        const meta = card.querySelectorAll(".meta span");
+        if(meta[0]) meta[0].textContent = t.pdf;
+        const read = card.querySelector(".btn-read");
+        const download = card.querySelector(".btn-download");
+        if(read) read.textContent = t.read;
+        if(download) download.textContent = t.download;
+      });
+      activeCategory = "All";
+      buildCategoryFilters();
+      updateLibrary();
+    }
+
+    function buildCategoryFilters() {
+      const categories = [...new Set(cards.map(card => card.dataset.category.trim()).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, currentLanguage));
+      filters.replaceChildren();
+      ["All", ...categories].forEach(category => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "filter" + (category === activeCategory ? " active" : "");
+        button.dataset.category = category;
+        button.textContent = category === "All" ? ui[currentLanguage].all : category;
+        button.addEventListener("click", () => {
+          activeCategory = category;
+          filters.querySelectorAll(".filter").forEach(item => item.classList.toggle("active", item === button));
+          updateLibrary();
+        });
+        filters.appendChild(button);
+      });
+    }
+
+    function updateLibrary() {
+      const query = searchInput.value.trim().toLocaleLowerCase(currentLanguage);
+      let visible = 0;
+      cards.forEach(card => {
+        const searchable = [card.dataset.title, card.dataset.category, card.dataset.description,
+          card.dataset.originalTitle, card.dataset.originalCategory, card.dataset.originalDescription]
+          .join(" ").toLocaleLowerCase(currentLanguage);
+        const matchesSearch = searchable.includes(query);
+        const matchesCategory = activeCategory === "All" || card.dataset.category === activeCategory;
+        const show = matchesSearch && matchesCategory;
+        card.hidden = !show;
+        if (show) visible++;
+      });
+      emptyState.style.display = visible ? "none" : "block";
+      resultCount.textContent = `${visible} ${visible === 1 ? ui[currentLanguage].itemsOne : ui[currentLanguage].itemsMany}`;
+    }
+
+    searchInput.addEventListener("input", updateLibrary);
+    languageSelect.addEventListener("change", event => applyLanguage(event.target.value));
+    document.getElementById("totalBooks").textContent = cards.length;
+    document.getElementById("totalCategories").textContent = new Set(cards.map(card => card.dataset.category.trim())).size;
+    document.getElementById("year").textContent = new Date().getFullYear();
+    applyLanguage("en");
+  </script>
+</body>
+</html>
