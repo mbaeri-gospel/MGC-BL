@@ -1,3 +1,4 @@
+HEAD
 # MGC-BOOK-LAB — Manual Library Edition
 
 A static, responsive PDF library designed for GitHub Pages. The original dark-purple visual design and the five supplied PDF resources are preserved.
@@ -118,3 +119,6 @@ The PDF filenames and links do not change when visitors switch languages. The la
 - The site brand is **MGC-BL**. Its SVG logo is `favicon.svg`, also used as the browser favicon.
 - The curator portrait is `covers/mbaeri-gospel-chinomso.webp`; the name displayed below it is **Mbaeri Gospel Chinomso**.
 - To replace the portrait later, overwrite that image file with your new portrait using the same filename, or update the image `src` in `index.html`.
+
+# MGC-BL
+bd68eb2ced16d85a168a7048fce00e45c0b710d2
